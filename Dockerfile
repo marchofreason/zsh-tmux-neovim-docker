@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y \
       tmux \
       tzdata \
       wget \
-      zsh 
+      zsh
 RUN chsh -s /usr/bin/zsh
 
 # Install docker
@@ -38,7 +38,7 @@ RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 581
       apt-get install -y apt-transport-https &&\
       apt-get update &&\
       apt-get install -y docker-engine
-RUN  curl -o /usr/local/bin/docker-compose -L "https://github.com/docker/compose/releases/download/1.13.0/docker-compose-$(uname -s)-$(uname -m)" &&\
+RUN  curl -o /usr/local/bin/docker-compose -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" &&\
      chmod +x /usr/local/bin/docker-compose
 
 # Install go
@@ -52,7 +52,7 @@ RUN wget https://github.com/tmux/tmux/releases/download/2.5/tmux-2.5.tar.gz
 RUN tar xzvf tmux-2.5.tar.gz
 WORKDIR /usr/local/src/tmux-2.5
 RUN ./configure
-RUN make 
+RUN make
 RUN make install
 RUN rm -rf /usr/local/src/tmux*
 
@@ -61,21 +61,19 @@ RUN apt-get install -y \
       autoconf \
       automake \
       cmake \
+      gettext \
       g++ \
       libtool \
       libtool-bin \
+      ninja-build \
       pkg-config \
       python3 \
       python3-pip \
       unzip
-RUN pip3 install --upgrade pip &&\ 
-    pip3 install --user neovim jedi mistune psutil setproctitle
-WORKDIR /usr/local/src
-RUN git clone --depth 1 https://github.com/neovim/neovim.git
-WORKDIR /usr/local/src/neovim
-RUN git fetch --depth 1 origin tag v0.2.0
-RUN git reset --hard v0.2.0
-RUN make CMAKE_BUILD_TYPE=Release
-RUN make install
-RUN rm -rf /usr/local/src/neovim
 
+RUN pip3 install --upgrade pip
+RUN pip3 install jedi mistune psutil setproctitle
+
+RUN apt-add-repository ppa:neovim-ppa/stable
+RUN apt-get update
+RUN apt-get install -y neovim
